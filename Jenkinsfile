@@ -44,18 +44,27 @@ pipeline {
             }
         }
 
-	stage('Trivy Security Scan table') {
- 	   steps {
-        	sh '''
-		export LANG=C.UTF-8
-        	export LC_ALL=C.UTF-8
-        	trivy image --format table -o trivy-report.txt node-app:latest   
-    		'''
-		}
+
+	stage('Trivy Security Scan') {
+    	    steps {
+        	  sh '''
+        	  export LANG=C.UTF-8
+        	  export LC_ALL=C.UTF-8
+
+        	 trivy image --no-progress --format json -o trivy-report.json $IMAGE_NAME:$IMAGE_TAG
+
+        	 trivy image --no-progress \
+       		  --format template \
+	          --template "@contrib/html.tpl" \
+	          -o trivy-report.html \
+    	          $IMAGE_NAME:$IMAGE_TAG
+        	  '''
+    		}
 	}
+
         stage('Archive Reports') {
             steps {
-                archiveArtifacts artifacts: '*.txt , *.json', fingerprint: true
+                archiveArtifacts artifacts: '*.txt , *.json , *.html', fingerprint: true
             }
         }
 
