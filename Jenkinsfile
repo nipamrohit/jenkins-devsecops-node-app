@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "node-app"
+        IMAGE_NAME = "nipamrohit121/node-app"
         IMAGE_TAG = "latest"
     }
 
