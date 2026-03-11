@@ -1,37 +1,43 @@
 pipeline {
-ageny any
-  
-  stages {
-	stage ('Checkout code'){
-		step{
-		checkout scm 
-		}
-	}
-	stage ('Install Dependencies'){
-		step{
-		sh 'npm install'
-		}
-	}
-        stage ('Run Test'){
-                step{
-                sh 'npm test'
-                }
+    agent any
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
         }
-        stage ('Build Docker Image'){
-                step{
-                sh 'docker build -t node-app:latest'
-        	}        
-	}
-	stage('Static Code Analysis') { 
-		steps { 
-		sh 'npm run lint' 
-		} 
-	}
-	stage('Trivy Security Scan') { 
-		steps { 
-		sh 'trivy image node-app:latest' 
-		} 
-	}
-        
- 	}	
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Static Code Analysis (ESLint)') {
+            steps {
+                sh 'npm run lint'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t node-app:latest .'
+            }
+        }
+
+        stage('Trivy Security Scan') {
+            steps {
+                sh 'trivy image node-app:latest'
+            }
+        }
+
+    }
 }
