@@ -54,22 +54,22 @@ pipeline {
             }
         }
 
-        stage('Trivy HTML Report') {
-            steps {
-                sh '''
-                trivy image \
-                --no-progress \
-                --format template \
-                --template "@/opt/trivy/templates/html.tpl"     
-                -o trivy-report.html \
-                $IMAGE_NAME:$IMAGE_TAG
-                '''
-            }
-        }
+	stage('Trivy Security Scan') {
+    	    steps {
+            sh 'trivy image --format sarif -o trivy-report.sarif node-app:latest'
+    	    }
+	}
+
+	stage('Publish Security Report') {
+	    steps {
+	        recordIssues tools: [sarif(pattern: 'trivy-report.sarif')]
+	    }
+	}
+
 
         stage('Archive Reports') {
             steps {
-                archiveArtifacts artifacts: '*.txt, *.json, *.html', fingerprint: true
+                archiveArtifacts artifacts: '*.txt, *.json', fingerprint: true
             }
         }
 
