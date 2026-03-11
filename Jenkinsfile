@@ -20,7 +20,14 @@ ageny any
         stage ('Build Docker Image'){
                 step{
                 sh 'docker build -t node-app:latest'
-                }
-        }
- }	
+        	}        
+	}
+	stage('Static Code Analysis') { 
+		steps { 
+		sh 'npm run lint' 
+		} 
+	}
+
+        
+ 	}	
 }
