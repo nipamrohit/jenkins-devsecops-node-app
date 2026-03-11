@@ -40,10 +40,19 @@ pipeline {
 
         stage('Trivy Security Scan') {
             steps {
-                sh 'trivy image --format table -o trivy-report.txt $IMAGE_NAME:$IMAGE_TAG'
+                sh 'trivy image --format json -o trivy-report.json $IMAGE_NAME:$IMAGE_TAG'
             }
         }
 
+	stage('Trivy Security Scan') {
+ 	   steps {
+        	sh '''
+        	export LANG=C.UTF-8
+        	export LC_ALL=C.UTF-8
+        	trivy image --format table -o trivy-report.txt node-app:latest
+ 		'''   
+    		}
+	}
         stage('Archive Reports') {
             steps {
                 archiveArtifacts artifacts: '*.txt', fingerprint: true
