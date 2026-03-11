@@ -46,10 +46,12 @@ pipeline {
 
 	stage('Trivy Security Scan table') {
  	   steps {
-        	sh 'export LANG=C.UTF-8
+        	sh '''
+		export LANG=C.UTF-8
         	export LC_ALL=C.UTF-8
-        	trivy image --format table -o trivy-report.txt node-app:latest'   
-    		}
+        	trivy image --format table -o trivy-report.txt node-app:latest   
+    		'''
+		}
 	}
         stage('Archive Reports') {
             steps {
