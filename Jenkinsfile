@@ -26,9 +26,9 @@ pipeline {
             }
         }
 
-        stage('Static Code Analysis (ESLint)') {
+        stage('ESLint Analysis') {
             steps {
-                sh 'npm run lint > eslint-report.txt || true'
+                sh 'npx eslint . -f checkstyle -o eslint-report.xml || true'
             }
         }
 
@@ -38,38 +38,18 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan JSON') {
+        stage('Trivy Scan') {
             steps {
-                sh 'trivy image --no-progress --format json -o trivy-report.json $IMAGE_NAME:$IMAGE_TAG'
+                sh 'trivy image --format sarif -o trivy-report.sarif $IMAGE_NAME:$IMAGE_TAG'
             }
         }
 
-        stage('Trivy Scan Table') {
+        stage('Publish Reports') {
             steps {
-                sh '''
-                export LANG=C.UTF-8
-                export LC_ALL=C.UTF-8
-                trivy image --no-progress --format table -o trivy-report.txt $IMAGE_NAME:$IMAGE_TAG
-                '''
-            }
-        }
-
-	stage('Trivy Security Scan') {
-    	    steps {
-            sh 'trivy image --format sarif -o trivy-report.sarif node-app:latest'
-    	    }
-	}
-
-	stage('Publish Security Report') {
-	    steps {
-	        recordIssues tools: [sarif(pattern: 'trivy-report.sarif')]
-	    }
-	}
-
-
-        stage('Archive Reports') {
-            steps {
-                archiveArtifacts artifacts: '*.txt, *.json', fingerprint: true
+                recordIssues tools: [
+                    checkStyle(pattern: 'eslint-report.xml'),
+                    sarif(pattern: 'trivy-report.sarif')
+                ]
             }
         }
 
