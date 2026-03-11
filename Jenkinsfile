@@ -44,7 +44,7 @@ pipeline {
             }
         }
 
-	stage('Trivy Security Scan') {
+	stage('Trivy Security Scan table') {
  	   steps {
         	sh 'export LANG=C.UTF-8
         	export LC_ALL=C.UTF-8
