@@ -27,7 +27,11 @@ ageny any
 		sh 'npm run lint' 
 		} 
 	}
-
+	stage('Trivy Security Scan') { 
+		steps { 
+		sh 'trivy image node-app:latest' 
+		} 
+	}
         
  	}	
 }
