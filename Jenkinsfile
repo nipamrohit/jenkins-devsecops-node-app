@@ -55,7 +55,7 @@ pipeline {
 	}
         stage('Archive Reports') {
             steps {
-                archiveArtifacts artifacts: '*.txt', fingerprint: true
+                archiveArtifacts artifacts: '*.txt' , '*.json', fingerprint: true
             }
         }
 
