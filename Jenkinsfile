@@ -60,7 +60,7 @@ pipeline {
                 trivy image \
                 --no-progress \
                 --format template \
-                --template "@/home/nipam/jenkins/jenkins-devsecops-node-app/trivy-templates/html.tpl"  \
+                --template "@/opt/trivy/templates/html.tpl"     
                 -o trivy-report.html \
                 $IMAGE_NAME:$IMAGE_TAG
                 '''
